@@ -1,0 +1,17 @@
+{
+    "name": "jiangbianwanghai/bankloan",
+    "description": "a calculator of bank loan",
+    "homepage": "https://github.com/jiangbianwanghai/bankloan",
+    "type": "library",
+    "require": {
+        "php": "5.5"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "jiangbianwanghai",
+            "email": "webmaster@jiangbianwanghai.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
