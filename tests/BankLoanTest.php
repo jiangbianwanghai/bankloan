@@ -1,6 +1,7 @@
 <?php
 require_once './src/BankLoan.php';
 class BankLoanTest extends PHPUnit_Framework_TestCase {
+    
     protected $bankLoan = '';
 
     protected function setUp() {
