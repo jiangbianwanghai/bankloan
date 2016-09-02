@@ -6,13 +6,17 @@ a calculator of bank loan.
 ##Installation
 Use Composer to install the library.
 
-`$ composer require jiangbianwanghai/bankloan`
+``` bash
+$ composer require jiangbianwanghai/bankloan
+```
 
 ##Usage
-<pre><code>
+```php
+
 <?php
     require_once __DIR__.'/vendor/autoload.php';
     use Jiangbianwanghai\BankLoan\BankLoan;
     $bl = new BankLoan();
     echo $bl->sum(1, 1);
-</code></pre>
+    
+```
