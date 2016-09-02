@@ -19,7 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Jiangbianwanghai\\Bankloan\\": "src/"
+            "Jiangbianwanghai\\BankLoan\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jiangbianwanghai\\BankLoan\\": "tests/"
         }
     },
     "minimum-stability": "stable"

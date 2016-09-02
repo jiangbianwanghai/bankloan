@@ -1,7 +1,8 @@
 <?php
-//use Jiangbianwanghai\BankLoan;
-require_once './src/BankLoan.php';
-class BankLoanTest extends \PHPUnit_Framework_TestCase
+namespace Jiangbianwanghai\Tests\BankLoan;
+use Jiangbianwanghai\BankLoan\BankLoan;
+use PHPUnit_Framework_TestCase;
+class BankLoanTest extends PHPUnit_Framework_TestCase
 {
     
     protected $bankLoan = '';

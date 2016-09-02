@@ -1,5 +1,5 @@
 <?php
-//namespace Jiangbianwanghai\BankLoan;
+namespace Jiangbianwanghai\BankLoan;
 class BankLoan 
 {
     public function sum($a, $b) {
