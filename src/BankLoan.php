@@ -1,7 +1,7 @@
 <?php
-namespace Jiangbianwanghai\Bankloan;
-class BankLoan {
-
+//namespace Jiangbianwanghai\BankLoan;
+class BankLoan 
+{
     public function sum($a, $b) {
         return $a + $b;
     }

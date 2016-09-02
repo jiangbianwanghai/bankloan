@@ -7,7 +7,7 @@ php:
   - 5.6
   - 7.0
 
-script: phpunit tests
+script: phpunit --bootstrap src/autoload.php --configuration phpunit.xml tests
 
 notifications:
   slack: jiangbianwanghai:SklSZHKIP7EvIle7q8Nb5My0
