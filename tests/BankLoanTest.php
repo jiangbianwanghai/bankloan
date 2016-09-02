@@ -1,4 +1,5 @@
 <?php
+namespace Jiangbianwanghai\Bankloan\Tests;
 require_once './src/BankLoan.php';
 class BankLoanTest extends PHPUnit_Framework_TestCase {
     
@@ -10,7 +11,6 @@ class BankLoanTest extends PHPUnit_Framework_TestCase {
     }
 
     protected function tearDown() {
- 
         parent::tearDown ();
     }
 

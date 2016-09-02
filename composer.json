@@ -1,11 +1,9 @@
 {
     "name": "jiangbianwanghai/bankloan",
     "description": "a calculator of bank loan",
+    "keywords": ["loan", "calculator", "bank"],
     "homepage": "https://github.com/jiangbianwanghai/bankloan",
     "type": "library",
-    "require": {
-        "php": "5.5"
-    },
     "license": "MIT",
     "authors": [
         {
@@ -13,5 +11,16 @@
             "email": "webmaster@jiangbianwanghai.com"
         }
     ],
+    "require": {
+        "php": "^5.3.3|^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jiangbianwanghai\\Bankloan\\": "src/"
+        }
+    },
     "minimum-stability": "stable"
 }
