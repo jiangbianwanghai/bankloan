@@ -27,4 +27,13 @@ class BankLoanTest extends PHPUnit_Framework_TestCase
     public function testSubstract() {
         $this->assertNotEquals(3,$this->bankLoan->subtract(1,1));
     }
+    public function testGetInterest() {
+        $this->assertNotEquals(1817.08,$this->bankLoan->getInterest());
+    }
+    public function testGetPrincipal() {
+        $this->assertNotEquals(1095.19,$this->bankLoan->getPrincipal());
+    }
+    public function testGetPriAndInt() {
+        $this->assertNotEquals(2912.28,$this->bankLoan->getPriAndInt());
+    }
 }
