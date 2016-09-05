@@ -14,9 +14,12 @@ $ composer require jiangbianwanghai/bankloan
 ```php
 
 <?php
-    require_once __DIR__.'/vendor/autoload.php';
-    use Jiangbianwanghai\BankLoan\BankLoan;
-    $bl = new BankLoan();
-    echo $bl->sum(1, 1);
+require_once __DIR__.'/vendor/autoload.php';
+use Jiangbianwanghai\BankLoan\BankLoan;
+$bl = new BankLoan();
+echo $bl->sum(1, 1);
     
 ```
+
+##License
+The MIT License (MIT). Please see License File for more information.
