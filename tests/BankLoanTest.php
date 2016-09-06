@@ -9,7 +9,7 @@ class BankLoanTest extends PHPUnit_Framework_TestCase
 
     protected function setUp() {
         parent::setUp ();
-        $this->bankLoan = new BankLoan();
+        $this->bankLoan = new BankLoan(10000, 0.0435, 1);
     }
 
     protected function tearDown() {
@@ -20,20 +20,21 @@ class BankLoanTest extends PHPUnit_Framework_TestCase
 
     }
 
-    public function testSum() {
-        $this->assertEquals(4,$this->bankLoan->sum(2,2));
+    public function testGetInterest() {
+        $this->assertEquals(362.50, $this->bankLoan->getInterest());
     }
 
-    public function testSubstract() {
-        $this->assertNotEquals(3,$this->bankLoan->subtract(1,1));
-    }
-    public function testGetInterest() {
-        $this->assertEquals(1817.08,$this->bankLoan->getInterest());
-    }
+    /**
     public function testGetPrincipal() {
-        $this->assertEquals(1095.19,$this->bankLoan->getPrincipal());
+        $this->assertEquals(8168.49, $this->bankLoan->getPrincipal());
     }
+
     public function testGetPriAndInt() {
-        $this->assertEquals(2912.28,$this->bankLoan->getPriAndInt());
-    }
+        $this->assertEquals(8530.99, $this->bankLoan->getPriAndInt());
+    }*/
+
+    /*public function testGetACPI()
+    {
+        var_dump($this->bankLoan->getACPI());
+    }*/
 }
