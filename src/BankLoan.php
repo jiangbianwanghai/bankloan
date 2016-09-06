@@ -48,7 +48,7 @@ class BankLoan
 	 */
 	public function getACPI()
 	{
-		$array = array();
+		$output = [];
 		//计算出每月偿还的本息
 		$priAndInt = $this->total*($this->rateByMonth*pow(1+$this->rateByMonth, $this->year*12))/(pow(1+$this->rateByMonth, $this->year*12)-1);
 		$monthTotal = $this->year*12;
@@ -57,17 +57,16 @@ class BankLoan
 		for ($i=1; $i <= $monthTotal; $i++) {
 			$total = $total - $principal;
 			//偿还本息
-			$array[$i]['priandint'] = sprintf("%.2f", $priAndInt);
+			$output[$i]['priandint'] = sprintf("%.2f", $priAndInt);
 			//偿还利息
 			$interest = $total*$this->rateByMonth;
-			$array[$i]['interest'] = sprintf("%.2f", $interest);
+			$output[$i]['interest'] = sprintf("%.2f", $interest);
 			//偿还本金
 			$principal = $priAndInt - $interest;
-			$array[$i]['principal'] = sprintf("%.2f", $principal);
+			$output[$i]['principal'] = sprintf("%.2f", $principal);
 			//剩余本金
 			$array[$i]['lesstotal'] = sprintf("%.2f", $total-$principal);
-			
 		}
-		return $array;
+		return $output;
 	}
 }
