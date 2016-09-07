@@ -130,16 +130,7 @@ class BankLoan
 	 */
 	private function _getinterestRate()
 	{
-		$config = [
-			'PBC' => [
-				'20141122' => ['5.60', '5.60', '6.00', '6.00', '6.15'],
-				'20150301' => ['5.35', '5.35', '5.75', '5.75', '5.90'],
-				'20150511' => ['5.10', '5.10', '5.50', '5.50', '5.65'],
-				'20150628' => ['4.85', '4.85', '5.25', '5.25', '5.40'],
-				'20150826' => ['4.60', '4.60', '5.00', '5.00', '5.15'],
-				'20151024' => ['4.35', '4.35', '4.75', '4.75', '4.90']
-			]
-		];
+		$config = require(__DIR__.'/config.php');
 		if ($this->interestRateChangeIndex) {
 			if (isset($config[$this->bank][$this->interestRateChangeIndex])) {
 				$currConfig = $config[$this->bank][$this->interestRateChangeIndex];
