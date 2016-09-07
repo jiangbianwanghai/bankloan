@@ -11,14 +11,14 @@ class BankLoan
 	protected $total = 100000;
 
 	/**
-	 * @var float
-	 */
-	protected $rate = 0;
-
-	/**
 	 * @var int
 	 */
 	protected $year = 1;
+
+	/**
+	 * @var float
+	 */
+	protected $rate = 0;
 
 	/**
 	 * @var int
@@ -28,33 +28,44 @@ class BankLoan
 	/**
 	 * @var int
 	 */
-	protected $monthlyRate = 0;
+	protected $bank = 'PBC'; // The people's bank of China
 
 	/**
 	 * @var int
 	 */
-	protected $bank = 'PBC'; // The people's bank of China
+	private $_monthlyRate = 0;
+
+	/**
+	 * @var int
+	 */
+	private $_interestPartTemp = 0;
 
 	/**
 	 * init param
 	 *
-	 * @param int $total
-	 * @param int $year
-	 * @param int $rate
-	 * @param int $ratechangeindex
+	 * @param int $config['total']
+	 * @param int $config['year']
+	 * @param int $config['rate']
+	 * @param int $config['ratechangeindex']
 	 *
 	 */
-	public function __construct($total, $year, $rate = 0, $ratechangeindex = 0)
+	public function __construct($config)
 	{
-		!empty($total) && $this->total = $total;
-		!empty($year) && $this->year = $year;
-		if (!empty($rate)) {
-			$this->rate = $rate/100;
+		if (isset($config['total']) && !empty($config['total'])) {
+			$this->total = $config['total'];
+		}
+		if (isset($config['year']) && !empty($config['year'])) {
+			$this->year = $config['year'];
+		}
+		if (isset($config['ratechangeindex']) && !empty($config['ratechangeindex'])) {
+			$this->ratechangeindex = $config['ratechangeindex'];
+		}
+		if (isset($config['rate']) && !empty($config['rate'])) {
+			$this->rate = $config['rate']/100;
 		} else {
 			$this->_getRate();
 		}
-		!empty($ratechangeindex) && $this->ratechangeindex = $ratechangeindex;
-		$this->monthlyRate = $this->rate/12;
+		$this->_monthlyRate = $this->rate/12;
 		$this->period = $this->year*12;
 	}
 
@@ -67,12 +78,12 @@ class BankLoan
 	public function getELP()
 	{
 		$output = [];
-		$paymentAmount = $this->total*($this->monthlyRate*pow(1+$this->monthlyRate, $this->year*12))/(pow(1+$this->monthlyRate, $this->year*12)-1); // Payment Amount
+		$paymentAmount = $this->total*($this->_monthlyRate*pow(1+$this->_monthlyRate, $this->year*12))/(pow(1+$this->_monthlyRate, $this->year*12)-1); // Payment Amount
 		$total = $this->total;
 		$initPrincipalPart = 0; // Init Prncipal Part
 		for ($i=1; $i <= $this->period; $i++) {
 			$total = $total - $initPrincipalPart;
-			$interestPart = $total*$this->monthlyRate;
+			$interestPart = $total*$this->_monthlyRate;
 			$output['period'][$i]['ip'] = sprintf("%.2f", $interestPart); // Interest Part
 			$output['period'][$i]['pa'] = sprintf("%.2f", $paymentAmount); // Payment Amount
 			$principal = $initPrincipalPart = $paymentAmount - $interestPart;
@@ -94,19 +105,23 @@ class BankLoan
 		$principalPart = $this->total/($this->year*12); // Principal Part
 		$totalInterest = 0;
 		$total = $this->total;
+		$equalAll = $equalItem = 0;
 		for ($i=1; $i <= $this->period; $i++) {
 			if ($i > 1)
 				$total = $total - $principalPart;
-			$interestPart = $total*$this->monthlyRate;
+			$interestPart = $total*$this->_monthlyRate;
 			$totalInterest += $interestPart;
 			$output['period'][$i]['ip'] = sprintf("%.2f", $interestPart); // Interest Part
 			$output['period'][$i]['pp'] = sprintf("%.2f", $principalPart); // Principal Part
 			$output['period'][$i]['pa'] = sprintf("%.2f", $principalPart+$interestPart); // Payment Amount
 			$output['period'][$i]['bo'] = sprintf("%.2f", $total - $principalPart); // Balance Owed
+			$i > 1 && $equalItem = $this->_interestPartTemp - $interestPart;
+			$this->_interestPartTemp = $interestPart;
+			$equalAll += $equalItem;
 		}
 		$output['ti'] = sprintf("%.2f", $totalInterest); // Total Interest
 		$output['tp'] = sprintf("%.2f", $this->total+$totalInterest); // Total Payments
-		$output['equal'] = sprintf("%.2f", $output['period'][1]['ip'] - $output['period'][2]['ip']);
+		$output['equal'] = sprintf("%.2f", $equalAll/($this->year*12 - 1));
 		return $output;
 	}
 
@@ -125,7 +140,6 @@ class BankLoan
 				'20151024' => ['4.35', '4.35', '4.75', '4.75', '4.90']
 			]
 		];
-
 		if ($this->ratechangeindex) {
 			if (isset($config[$this->bank][$this->ratechangeindex])) {
 				$currConfig = $config[$this->bank][$this->ratechangeindex];
