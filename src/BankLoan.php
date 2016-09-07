@@ -1,6 +1,9 @@
 <?php
+/**
+ * Amortization Schedule Calculator
+ */
 namespace Jiangbianwanghai\BankLoan;
-class BankLoan 
+class BankLoan
 {
 	/**
 	 * @var int
@@ -10,7 +13,7 @@ class BankLoan
 	/**
 	 * @var float
 	 */
-	protected $rate = 0.0435;
+	protected $rate = 0;
 
 	/**
 	 * @var int
@@ -20,53 +23,130 @@ class BankLoan
 	/**
 	 * @var int
 	 */
-	protected $rateByMonth = 0;
+	protected $ratechangeindex = 0;
 
-	public function __construct($total, $rate, $year)
+	/**
+	 * @var int
+	 */
+	protected $monthlyRate = 0;
+
+	/**
+	 * @var int
+	 */
+	protected $bank = 'PBC'; // The people's bank of China
+
+	/**
+	 * init param
+	 *
+	 * @param int $total
+	 * @param int $year
+	 * @param int $rate
+	 * @param int $ratechangeindex
+	 *
+	 */
+	public function __construct($total, $year, $rate = 0, $ratechangeindex = 0)
 	{
 		!empty($total) && $this->total = $total;
-		!empty($rate) && $this->rate = $rate;
 		!empty($year) && $this->year = $year;
-		$this->rateByMonth = $this->rate/12;
+		if (!empty($rate)) {
+			$this->rate = $rate/100;
+		} else {
+			$this->_getRate();
+		}
+		!empty($ratechangeindex) && $this->ratechangeindex = $ratechangeindex;
+		$this->monthlyRate = $this->rate/12;
+		$this->period = $this->year*12;
 	}
 
 	/**
-	 * 等额本息
+	 * Equal Loan Payments
 	 *
-	 * 等额本息的计算公式是：
-	 * a=F*i(1+i)^n/[(1+i)^n-1]
-	 * a:月供;
-	 * F:贷款总额;
-	 * i:贷款月利率=年利率/12；
-	 * n：还款月数
-	 * ^：次方。
-	 * 利息和本金的计算方法是：首先依据上面的公式计算每月还款额，再根据还款时间计算每月的利息和本金。
-	 * 举例说明，比如贷款50万，时间20年，利率5.9%，每月的还款额计算为：3553.37元。
-	 * 第一个月：利息=500000×5.9%/12= 2458.33元，本金=3553.37-2458.33=1095.04元；
-	 * 第二个月：利息=（500000-1095.04）×5.9%/12=2452.95元，本金=3553.37-2452.95=1100.42元；
-	 * 第三个月：利息（500000-1095.04-1100.42）×5.9%/12=2447.54，本金=3557.37-2447.54=1109.83；
+	 * @return array
+	 *
 	 */
-	public function getACPI()
+	public function getELP()
 	{
 		$output = [];
-		//计算出每月偿还的本息
-		$priAndInt = $this->total*($this->rateByMonth*pow(1+$this->rateByMonth, $this->year*12))/(pow(1+$this->rateByMonth, $this->year*12)-1);
-		$monthTotal = $this->year*12;
+		$paymentAmount = $this->total*($this->monthlyRate*pow(1+$this->monthlyRate, $this->year*12))/(pow(1+$this->monthlyRate, $this->year*12)-1); // Payment Amount
 		$total = $this->total;
-		$principal = 0;
-		for ($i=1; $i <= $monthTotal; $i++) {
-			$total = $total - $principal;
-			//偿还本息
-			$output[$i]['priandint'] = sprintf("%.2f", $priAndInt);
-			//偿还利息
-			$interest = $total*$this->rateByMonth;
-			$output[$i]['interest'] = sprintf("%.2f", $interest);
-			//偿还本金
-			$principal = $priAndInt - $interest;
-			$output[$i]['principal'] = sprintf("%.2f", $principal);
-			//剩余本金
-			$array[$i]['lesstotal'] = sprintf("%.2f", $total-$principal);
+		$initPrincipalPart = 0; // Init Prncipal Part
+		for ($i=1; $i <= $this->period; $i++) {
+			$total = $total - $initPrincipalPart;
+			$interestPart = $total*$this->monthlyRate;
+			$output['period'][$i]['ip'] = sprintf("%.2f", $interestPart); // Interest Part
+			$output['period'][$i]['pa'] = sprintf("%.2f", $paymentAmount); // Payment Amount
+			$principal = $initPrincipalPart = $paymentAmount - $interestPart;
+			$output['period'][$i]['pp'] = sprintf("%.2f", $principal); // Principal Part
+			$output['period'][$i]['bo'] = sprintf("%.2f", abs($total-$principal)); // Banlance Owed
 		}
 		return $output;
+	}
+
+	/**
+	 * Equal Principal Payments
+	 *
+	 * @return array
+	 *
+	 */
+	public function getEPP()
+	{
+		$output = [];
+		$principalPart = $this->total/($this->year*12); // Principal Part
+		$totalInterest = 0;
+		$total = $this->total;
+		for ($i=1; $i <= $this->period; $i++) {
+			if ($i > 1)
+				$total = $total - $principalPart;
+			$interestPart = $total*$this->monthlyRate;
+			$totalInterest += $interestPart;
+			$output['period'][$i]['ip'] = sprintf("%.2f", $interestPart); // Interest Part
+			$output['period'][$i]['pp'] = sprintf("%.2f", $principalPart); // Principal Part
+			$output['period'][$i]['pa'] = sprintf("%.2f", $principalPart+$interestPart); // Payment Amount
+			$output['period'][$i]['bo'] = sprintf("%.2f", $total - $principalPart); // Balance Owed
+		}
+		$output['ti'] = sprintf("%.2f", $totalInterest); // Total Interest
+		$output['tp'] = sprintf("%.2f", $this->total+$totalInterest); // Total Payments
+		$output['equal'] = sprintf("%.2f", $output['period'][1]['ip'] - $output['period'][2]['ip']);
+		return $output;
+	}
+
+	/**
+	 * Get ank rate
+	 */
+	private function _getRate()
+	{
+		$config = [
+			'PBC' => [
+				'20141122' => ['5.60', '5.60', '6.00', '6.00', '6.15'],
+				'20150301' => ['5.35', '5.35', '5.75', '5.75', '5.90'],
+				'20150511' => ['5.10', '5.10', '5.50', '5.50', '5.65'],
+				'20150628' => ['4.85', '4.85', '5.25', '5.25', '5.40'],
+				'20150826' => ['4.60', '4.60', '5.00', '5.00', '5.15'],
+				'20151024' => ['4.35', '4.35', '4.75', '4.75', '4.90']
+			]
+		];
+
+		if ($this->ratechangeindex) {
+			if (isset($config[$this->bank][$this->ratechangeindex])) {
+				$currConfig = $config[$this->bank][$this->ratechangeindex];
+			}
+		} else {
+			$currConfig = end($config[$this->bank]);
+		}
+
+		if (empty($this->rate)) {
+			if ($this->year <= 0.6) {
+				$rate = $currConfig[0];
+			} elseif ($this->year <= 1) {
+				$rate = $currConfig[1];
+			} elseif ($this->year <= 3) {
+				$rate = $currConfig[2];
+			} elseif ($this->year <= 5) {
+				$rate = $currConfig[3];
+			} else {
+				$rate = $currConfig[4];
+			}
+			$this->rate = $rate/100;
+		}
 	}
 }
