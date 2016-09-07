@@ -25,7 +25,7 @@ class BankLoanTest extends PHPUnit_Framework_TestCase
      */
     public function testThan5Year()
     {
-        $this->bankLoan = new BankLoan(['total' => 100000, 'year' => 10]);
+        $this->bankLoan = new BankLoan(['loanAmount' => 100000, 'year' => 10]);
 
         $elp = $this->bankLoan->getELP();
         $this->assertEquals(1055.77, $elp['period'][70]['pa']);
@@ -44,11 +44,11 @@ class BankLoanTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * test $rate
+     * test $interestRate
      */
     public function testRate()
     {
-        $this->bankLoan = new BankLoan(['total' => 100000, 'year' => 1, 'rate' => 5.60]);
+        $this->bankLoan = new BankLoan(['loanAmount' => 100000, 'year' => 1, 'interestRate' => 5.60]);
 
         $elp = $this->bankLoan->getELP();
         $this->assertEquals(8588.27, $elp['period'][7]['pa']);
@@ -67,11 +67,11 @@ class BankLoanTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * test $ratechangeindex
+     * test $interestRateChangeIndex
      */
     public function testRateChangeIndex()
     {
-        $this->bankLoan = new BankLoan(['total' => 100000, 'year' => 4, 'ratechangeindex' => 20150301]);
+        $this->bankLoan = new BankLoan(['loanAmount' => 100000, 'year' => 4, 'interestRateChangeIndex' => 20150301]);
 
         $elp = $this->bankLoan->getELP();
         $this->assertEquals(2337.06, $elp['period'][7]['pa']);

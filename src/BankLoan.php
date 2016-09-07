@@ -8,7 +8,7 @@ class BankLoan
 	/**
 	 * @var int
 	 */
-	protected $total = 100000;
+	protected $loanAmount = 100000;
 
 	/**
 	 * @var int
@@ -18,12 +18,12 @@ class BankLoan
 	/**
 	 * @var float
 	 */
-	protected $rate = 0;
+	protected $interestRate = 0;
 
 	/**
 	 * @var int
 	 */
-	protected $ratechangeindex = 0;
+	protected $interestRateChangeIndex = 0;
 
 	/**
 	 * @var int
@@ -33,7 +33,7 @@ class BankLoan
 	/**
 	 * @var int
 	 */
-	private $_monthlyRate = 0;
+	private $_monthlyinterestRate = 0;
 
 	/**
 	 * @var int
@@ -43,29 +43,29 @@ class BankLoan
 	/**
 	 * init param
 	 *
-	 * @param int $config['total']
+	 * @param int $config['loanAmount']
 	 * @param int $config['year']
-	 * @param int $config['rate']
-	 * @param int $config['ratechangeindex']
+	 * @param int $config['interestRate']
+	 * @param int $config['interestRateChangeIndex']
 	 *
 	 */
 	public function __construct($config)
 	{
-		if (isset($config['total']) && !empty($config['total'])) {
-			$this->total = $config['total'];
+		if (isset($config['loanAmount']) && !empty($config['loanAmount'])) {
+			$this->loanAmount = $config['loanAmount'];
 		}
 		if (isset($config['year']) && !empty($config['year'])) {
 			$this->year = $config['year'];
 		}
-		if (isset($config['ratechangeindex']) && !empty($config['ratechangeindex'])) {
-			$this->ratechangeindex = $config['ratechangeindex'];
+		if (isset($config['interestRateChangeIndex']) && !empty($config['interestRateChangeIndex'])) {
+			$this->interestRateChangeIndex = $config['interestRateChangeIndex'];
 		}
-		if (isset($config['rate']) && !empty($config['rate'])) {
-			$this->rate = $config['rate']/100;
+		if (isset($config['interestRate']) && !empty($config['interestRate'])) {
+			$this->interestRate = $config['interestRate']/100;
 		} else {
-			$this->_getRate();
+			$this->_getinterestRate();
 		}
-		$this->_monthlyRate = $this->rate/12;
+		$this->_monthlyinterestRate = $this->interestRate/12;
 		$this->period = $this->year*12;
 	}
 
@@ -78,17 +78,17 @@ class BankLoan
 	public function getELP()
 	{
 		$output = [];
-		$paymentAmount = $this->total*($this->_monthlyRate*pow(1+$this->_monthlyRate, $this->year*12))/(pow(1+$this->_monthlyRate, $this->year*12)-1); // Payment Amount
-		$total = $this->total;
+		$paymentAmount = $this->loanAmount*($this->_monthlyinterestRate*pow(1+$this->_monthlyinterestRate, $this->year*12))/(pow(1+$this->_monthlyinterestRate, $this->year*12)-1); // Payment Amount
+		$loanAmount = $this->loanAmount;
 		$initPrincipalPart = 0; // Init Prncipal Part
 		for ($i=1; $i <= $this->period; $i++) {
-			$total = $total - $initPrincipalPart;
-			$interestPart = $total*$this->_monthlyRate;
+			$loanAmount = $loanAmount - $initPrincipalPart;
+			$interestPart = $loanAmount*$this->_monthlyinterestRate;
 			$output['period'][$i]['ip'] = sprintf("%.2f", $interestPart); // Interest Part
 			$output['period'][$i]['pa'] = sprintf("%.2f", $paymentAmount); // Payment Amount
 			$principal = $initPrincipalPart = $paymentAmount - $interestPart;
 			$output['period'][$i]['pp'] = sprintf("%.2f", $principal); // Principal Part
-			$output['period'][$i]['bo'] = sprintf("%.2f", abs($total-$principal)); // Banlance Owed
+			$output['period'][$i]['bo'] = sprintf("%.2f", abs($loanAmount-$principal)); // Banlance Owed
 		}
 		return $output;
 	}
@@ -102,33 +102,33 @@ class BankLoan
 	public function getEPP()
 	{
 		$output = [];
-		$principalPart = $this->total/($this->year*12); // Principal Part
-		$totalInterest = 0;
-		$total = $this->total;
+		$principalPart = $this->loanAmount/($this->year*12); // Principal Part
+		$loanAmountInterest = 0;
+		$loanAmount = $this->loanAmount;
 		$equalAll = $equalItem = 0;
 		for ($i=1; $i <= $this->period; $i++) {
 			if ($i > 1)
-				$total = $total - $principalPart;
-			$interestPart = $total*$this->_monthlyRate;
-			$totalInterest += $interestPart;
+				$loanAmount = $loanAmount - $principalPart;
+			$interestPart = $loanAmount*$this->_monthlyinterestRate;
+			$loanAmountInterest += $interestPart;
 			$output['period'][$i]['ip'] = sprintf("%.2f", $interestPart); // Interest Part
 			$output['period'][$i]['pp'] = sprintf("%.2f", $principalPart); // Principal Part
 			$output['period'][$i]['pa'] = sprintf("%.2f", $principalPart+$interestPart); // Payment Amount
-			$output['period'][$i]['bo'] = sprintf("%.2f", $total - $principalPart); // Balance Owed
+			$output['period'][$i]['bo'] = sprintf("%.2f", $loanAmount - $principalPart); // Balance Owed
 			$i > 1 && $equalItem = $this->_interestPartTemp - $interestPart;
 			$this->_interestPartTemp = $interestPart;
 			$equalAll += $equalItem;
 		}
-		$output['ti'] = sprintf("%.2f", $totalInterest); // Total Interest
-		$output['tp'] = sprintf("%.2f", $this->total+$totalInterest); // Total Payments
+		$output['ti'] = sprintf("%.2f", $loanAmountInterest); // loanAmount Interest
+		$output['tp'] = sprintf("%.2f", $this->loanAmount+$loanAmountInterest); // loanAmount Payments
 		$output['equal'] = sprintf("%.2f", $equalAll/($this->year*12 - 1));
 		return $output;
 	}
 
 	/**
-	 * Get ank rate
+	 * Get ank interestRate
 	 */
-	private function _getRate()
+	private function _getinterestRate()
 	{
 		$config = [
 			'PBC' => [
@@ -140,27 +140,27 @@ class BankLoan
 				'20151024' => ['4.35', '4.35', '4.75', '4.75', '4.90']
 			]
 		];
-		if ($this->ratechangeindex) {
-			if (isset($config[$this->bank][$this->ratechangeindex])) {
-				$currConfig = $config[$this->bank][$this->ratechangeindex];
+		if ($this->interestRateChangeIndex) {
+			if (isset($config[$this->bank][$this->interestRateChangeIndex])) {
+				$currConfig = $config[$this->bank][$this->interestRateChangeIndex];
 			}
 		} else {
 			$currConfig = end($config[$this->bank]);
 		}
 
-		if (empty($this->rate)) {
+		if (empty($this->interestRate)) {
 			if ($this->year <= 0.6) {
-				$rate = $currConfig[0];
+				$interestRate = $currConfig[0];
 			} elseif ($this->year <= 1) {
-				$rate = $currConfig[1];
+				$interestRate = $currConfig[1];
 			} elseif ($this->year <= 3) {
-				$rate = $currConfig[2];
+				$interestRate = $currConfig[2];
 			} elseif ($this->year <= 5) {
-				$rate = $currConfig[3];
+				$interestRate = $currConfig[3];
 			} else {
-				$rate = $currConfig[4];
+				$interestRate = $currConfig[4];
 			}
-			$this->rate = $rate/100;
+			$this->interestRate = $interestRate/100;
 		}
 	}
 }
