@@ -4,7 +4,12 @@
 
 Amortization Schedule Calculator
 
-[![Build Status](https://travis-ci.org/jiangbianwanghai/bankloan.svg?branch=master)](https://travis-ci.org/jiangbianwanghai/bankloan) [![Code Coverage](https://scrutinizer-ci.com/g/jiangbianwanghai/bankloan/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/jiangbianwanghai/bankloan/?branch=master) [![Latest Stable Version](https://poser.pugx.org/jiangbianwanghai/bankloan/v/stable)](https://packagist.org/packages/jiangbianwanghai/bankloan) [![Total Downloads](https://poser.pugx.org/jiangbianwanghai/bankloan/downloads)](https://packagist.org/packages/jiangbianwanghai/bankloan) [![Latest Unstable Version](https://poser.pugx.org/jiangbianwanghai/bankloan/v/unstable)](https://packagist.org/packages/jiangbianwanghai/bankloan) [![license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/jiangbianwanghai/bankloan/master/LICENSE)
+[![Build Status](https://travis-ci.org/jiangbianwanghai/bankloan.svg?branch=master)](https://travis-ci.org/jiangbianwanghai/bankloan) 
+[![Code Coverage](https://scrutinizer-ci.com/g/jiangbianwanghai/bankloan/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/jiangbianwanghai/bankloan/?branch=master) 
+[![Latest Stable Version](https://img.shields.io/packagist/v/jiangbianwanghai/bankloan.svg?style=flat-square)](https://packagist.org/packages/jiangbianwanghai/bankloan) 
+[![Total Downloads](https://img.shields.io/packagist/dt/jiangbianwanghai/bankloan.svg?style=flat-square)](https://packagist.org/packages/jiangbianwanghai/bankloan) 
+[![Latest Unstable Version](https://poser.pugx.org/jiangbianwanghai/bankloan/v/unstable)](https://packagist.org/packages/jiangbianwanghai/bankloan) 
+[![license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/jiangbianwanghai/bankloan/master/LICENSE)
 
 ##Installation
 
